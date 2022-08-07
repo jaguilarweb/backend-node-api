@@ -4,6 +4,9 @@ const routerApi = require('./routes');
 const app = express();
 const port = 3000;
 
+// Middleware nativo de express para recibir los datos en formato json.
+app.use(express.json());
+
 app.get('/', (req, res) => {
   res.send('Hello World Express!');
 });
