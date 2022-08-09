@@ -12,7 +12,8 @@ app.get('/', (req, res) => {}) */
 const router = express.Router();
 const service = new ProductService();
 
-router.get('/', (req, res) => {
+
+router.get('/', async (req, res) => {
 /*   const products = [];
   const { size } = req.query;
   const limit = size || 10;
@@ -24,7 +25,8 @@ router.get('/', (req, res) => {
       image: faker.image.imageUrl()
     });
   } */
-  const products = service.findAllProducts();
+  const products = await service.findAllProducts();
+ //const products = await service.find();
   res.json(products);
 });
 
@@ -35,9 +37,9 @@ router.get('/filter', (req, res) => {
 });
 
 //Endpoint dinámicos
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   const { id } = req.params;
-  const product = service.findOne(id);
+  const product = await service.findOne(id);
   res.json(product);
 /*   if (id === '999') {
     res.status(404).json({
@@ -53,24 +55,24 @@ router.get('/:id', (req, res) => {
 
 })
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   //Los datos que se reciben en el body de una petición POST.
   //En este caso se requiere un middleware nativo de express para recibir los datos en formato json.
   const body = req.body;
-  const newProduct = service.createProduct(body);
+  const newProduct = await service.createProduct(body);
   res.status(201).json({newProduct});
 });
 
-router.patch('/:id', (req, res) => {
+router.patch('/:id', async (req, res) => {
   const { id } = req.params;
   const body = req.body;
-  const product = service.updateProduct(id, body);
+  const product = await service.updateProduct(id, body);
   res.json({product});
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   const { id } = req.params;
-  const rta = service.deleteProduct(id);
+  const rta = await service.deleteProduct(id);
   res.json(rta);
 });
 
