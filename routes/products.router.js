@@ -2,7 +2,8 @@ const express = require('express');
 //const faker = require('faker');
 
 const ProductService = require('./../services/product.service');
-
+const validatorHandler = require('./../middlewares/validator.handler');
+const { createProductSchema, updateProductSchema, getProductSchema } = require('./../schemas/product.schema');
 //Antes del uso de router.
 /* const app = express();
 app.get('/', (req, res) => {}) */
@@ -37,14 +38,16 @@ router.get('/filter', (req, res) => {
 });
 
 //Endpoint dinámicos
-router.get('/:id', async (req, res, next) => {
-try {
-  const { id } = req.params;
-  const product = await service.findOne(id);
-  res.json(product);
-} catch (error) {
-  next(error);
-}
+router.get('/:id',
+  validatorHandler(getProductSchema, 'params'),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const product = await service.findOne(id);
+      res.json(product);
+    } catch (error) {
+      next(error);
+    }
 /*   if (id === '999') {
     res.status(404).json({
       error: 'El id no puede ser 999'
@@ -56,27 +59,30 @@ try {
       price: 300
     });
   } */
-
-})
-
-router.post('/', async (req, res) => {
-  //Los datos que se reciben en el body de una petición POST.
-  //En este caso se requiere un middleware nativo de express para recibir los datos en formato json.
-  const body = req.body;
-  const newProduct = await service.createProduct(body);
-  res.status(201).json({newProduct});
 });
 
-router.patch('/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
+router.post('/',
+validatorHandler(createProductSchema, 'body'),
+  async (req, res) => {
+    //Los datos que se reciben en el body de una petición POST.
+    //En este caso se requiere un middleware nativo de express para recibir los datos en formato json.
     const body = req.body;
-    const product = await service.updateProduct(id, body);
-    res.json({product});
-  } catch (error) {
-    next(error);
-  }
+    const newProduct = await service.createProduct(body);
+    res.status(201).json({newProduct});
+});
 
+router.patch('/:id',
+validatorHandler(getProductSchema, 'params'),
+validatorHandler(updateProductSchema, 'params'),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const body = req.body;
+      const product = await service.updateProduct(id, body);
+      res.json({product});
+    } catch (error) {
+      next(error);
+    }
 });
 
 router.delete('/:id', async (req, res) => {
