@@ -13,7 +13,7 @@ const router = express.Router();
 const service = new ProductService();
 
 
-router.get('/', async (req, res) => {
+router.get('/', async (_req, res) => {
 /*   const products = [];
   const { size } = req.query;
   const limit = size || 10;
@@ -37,10 +37,14 @@ router.get('/filter', (req, res) => {
 });
 
 //Endpoint dinámicos
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
+try {
   const { id } = req.params;
   const product = await service.findOne(id);
   res.json(product);
+} catch (error) {
+  next(error);
+}
 /*   if (id === '999') {
     res.status(404).json({
       error: 'El id no puede ser 999'

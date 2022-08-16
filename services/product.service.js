@@ -21,7 +21,7 @@ class ProductService {
     }
   }
 
-  async createProduct(product) {
+  async createProduct(product){
     const newProduct = {
       id: faker.datatype.uuid(),
       ...product
@@ -38,12 +38,12 @@ class ProductService {
     });
   }
 
-
   async findAllProducts() {
     return this.products;
   }
 
   async findOne(id) {
+    //const name = this.getTotal();
     return this.products.find(product => product.id === id);
   }
 
