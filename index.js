@@ -5,7 +5,7 @@ const routerApi = require('./routes');
 require("express-async-errors");
 
 
-const {logErrors, errorHandler } = require('./middlewares/error.handler');
+const {logErrors, errorHandler, boomErrorHandler } = require('./middlewares/error.handler');
 
 const app = express();
 const port = 3000;
@@ -29,7 +29,9 @@ routerApi(app);
 //Esto es importante porque si no, los errores no se manejan correctamente.
 //Otra cosa importante es el orden de los middlewares.
 app.use(logErrors);
+app.use(boomErrorHandler);
 app.use(errorHandler);
+
 
 
 app.listen(port, () => {
